@@ -1,0 +1,69 @@
+# Toggle Example #
+
+This example demonstrates how to write to a device using Seriality to control an LED via radio buttons. This example is also available in the Seriality installation package and [online](http://zambetti.com/projects/seriality/examples/toggle.html).
+
+![http://www.zambetti.com/projects/seriality/images/toggle.jpg](http://www.zambetti.com/projects/seriality/images/toggle.jpg)
+
+## HTML/JS/Seriality ##
+
+```
+<html>
+<head>
+
+  <script type="text/javascript">
+  
+    // make global reference
+    var serial;
+  
+    function setup()
+    {
+      // instantiate seriality
+      serial = (document.getElementById("seriality")).Seriality();
+
+      // begin serial communications on first known port at 9600 baud
+      serial.begin(serial.ports[0], 9600);
+
+      // write a '-' to set the initial state of the LED to off
+      serial.write('-');
+
+      // note the use of 'onload' and 'onclick' below...
+    }
+ 
+  </script>
+
+</head>
+<body onload="setup()">
+
+  <object type="application/Seriality" id="seriality" width="0" height="0"> </object>
+
+  <form>
+    ON <input type="radio" name="led" value="on" onclick="serial.write('!');"><br/>
+    OFF <input type="radio" name="led" value="off" onclick="serial.write('-');" checked="checked">
+  </form>
+
+</body>
+</html>
+```
+
+## Wiring/Arduino ##
+
+```
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+}
+
+void loop()
+{
+  char in;
+  if (Serial.available()) {
+    in = Serial.read();
+    if (in == '!') {
+      digitalWrite(13, HIGH);
+    } else {
+      digitalWrite(13, LOW);
+    }
+  }
+}
+```
